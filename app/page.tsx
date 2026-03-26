@@ -12,6 +12,7 @@ import { useT } from '@/lib/i18n'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { getAllStaticProducts, PRODUCERS, type Producer } from '@/lib/data'
 import { getAdminProducts } from '@/lib/product-store'
+import { ProducerCertification } from '@/components/ProducerCertification'
 
 // ── Live price ticker data ────────────────────────────────────────────
 // Prices reflect current wholesale market rates (USD/kg, Mar 2026)
@@ -302,7 +303,10 @@ const CERT_COLORS: Record<string, string> = {
 }
 
 function ProducerPanel({ producer, onBack }: { producer: Producer; onBack: () => void }) {
+  const [showCert, setShowCert] = useState(false)
   return (
+    <>
+    {showCert && <ProducerCertification producer={producer} onClose={() => setShowCert(false)} />}
     <motion.div
       key="producer-panel"
       initial={{ opacity: 0, x: 40 }}
@@ -380,6 +384,14 @@ function ProducerPanel({ producer, onBack }: { producer: Producer; onBack: () =>
         </div>
       </div>
 
+      {/* Certificate link */}
+      <button
+        onClick={() => setShowCert(true)}
+        className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold text-sm hover:bg-emerald-100 transition-colors"
+      >
+        <Shield className="w-4 h-4" /> View Registration & Certification
+      </button>
+
       {/* CTA */}
       <Link
         href="/marketplace/buy"
@@ -388,6 +400,7 @@ function ProducerPanel({ producer, onBack }: { producer: Producer; onBack: () =>
         <ShoppingCart className="w-4 h-4" /> Browse Products from {producer.name}
       </Link>
     </motion.div>
+    </>
   )
 }
 
